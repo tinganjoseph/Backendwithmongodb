@@ -1,14 +1,10 @@
 
 const db = require("../models");
 const Merchant = db.merchant;
-const getPagination = (page, size) => {
-  const limit = size ? +size : 3;
-  const offset = page ? page * limit : 0;
-  return { limit, offset };
-};
+
 // Create and Save a new merchant
 exports.create = (req, res) => {
-  const { email, firstname, lastname,companyname,contact,address,position } = req.body;
+  const { email, firstname, lastname,companyname,contact,address,position,merchantId } = req.body;
    // Validate request
    if (!req.body.email) {
     res.status(400).send({ message: "Content can not be empty!" });
@@ -23,6 +19,7 @@ exports.create = (req, res) => {
     contact:contact,
     address:address,
     position:position,
+    merchantId:merchantId,
     name: `${firstname} ${lastname}`, 
   });
   // Save merchant in the database
@@ -30,6 +27,7 @@ exports.create = (req, res) => {
     .save(merchant)
     .then(data => {
       res.send(data);
+      console.log(data);
     })
     .catch(err => {
       res.status(500).send({
@@ -40,17 +38,9 @@ exports.create = (req, res) => {
 };
 // Retrieve all merchant from the database.
 exports.findAll = (req, res) => {
-  const { page, size } = req.query;
-  const { limit, offset } = getPagination(page, size);
-  Merchant.paginate( { offset, limit })
-  ///Merchant.find({})
+  Merchant.find({})
   .then(data => {
-    res.send({
-        totalItems: data.totalDocs,
-        merchants: data.docs,
-        totalPages: data.totalPages,
-        currentPage: data.page - 1,
-    });
+    res.send(data);
   })
   .catch(err => {
     res.status(500).send({
@@ -59,6 +49,22 @@ exports.findAll = (req, res) => {
     });
   });
 };
+
+exports.findMerchant =(req,res)=>{
+  try {
+    Merchant.find({merchantId: req.params.merchantId})
+    .then(data =>{
+      if(!data)
+      res.status(404).send({message: "Merchant Not found with merchantcode"+ id});
+      else res.send(data);
+    })
+  } catch (error) {
+    res
+          .status(500)
+          .send({ message: "Error retrieving Merchant with merchantcode=" + id });
+    
+  }
+}
 // Find a single merchant with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;

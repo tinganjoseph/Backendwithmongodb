@@ -8,7 +8,7 @@ module.exports = app => {
     
     // Retrieve a single merchant with id
     router.get("/:id", loyaltycustomer.findOne);
-    router.get("/merchantcode", loyaltycustomer.findAllMerchantcode);
+    router.get("/find/:merchantcode", loyaltycustomer.findMerchant);
     // Update a merchant with id
     router.put("/:id", loyaltycustomer.update);
     // Delete a merchant with id

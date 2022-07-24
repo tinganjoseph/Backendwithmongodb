@@ -24,3 +24,37 @@ secret: we don’t provide keys, so we use this as single key. In practice, you 
 httpOnly: indicate that the cookie is only to be sent over HTTP(S), and not made available to client JavaScript.
 Now let’s run the app with command: 
 node server.js.
+
+
+
+
+// GET MONTHLY INCOME
+
+router.get("/income", verifyTokenAndAdmin, async (req, res) => {
+  const date = new Date();
+  const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
+  const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+
+  try {
+    const income = await Order.aggregate([
+      { $match: { createdAt: { $gte: previousMonth } } },
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+          sales: "$amount",
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: "$sales" },
+        },
+      },
+    ]);
+    res.status(200).json(income);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+module.exports = router;

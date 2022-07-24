@@ -1,14 +1,10 @@
 
 const db = require("../models");
 const Customer = db.customer;
-const getPagination = (page, size) => {
-    const limit = size ? +size : 3;
-    const offset = page ? page * limit : 0;
-    return { limit, offset };
-  };
+
 // Create and Save a new customer
 exports.create = (req, res) => {
-  const { email, firstname, lastname,contact } = req.body;
+  const { email, firstname, lastname,contact,customerId } = req.body;
    // Validate request
    if (!req.body.email) {
     res.status(400).send({ message: "Content can not be empty!" });
@@ -20,6 +16,7 @@ exports.create = (req, res) => {
     firstname:firstname,
     lastname:lastname,
     contact:contact,
+    customerId:customerId,
     name: `${firstname} ${lastname}`, 
   });
   // Save customer in the database
@@ -37,24 +34,33 @@ exports.create = (req, res) => {
 };
 // Retrieve all customer from the database.
 exports.findAll = (req, res) => {
- const { page, size } = req.query;
-  const { limit, offset } = getPagination(page, size);
-  Customer.paginate( { offset, limit })
-  ///Customer.find({})
+
+  Customer.find({})
   .then(data => {
-    res.send({
-        totalItems: data.totalDocs,
-        customers: data.docs,
-        totalPages: data.totalPages,
-        currentPage: data.page - 1,
-    });
+    res.send(data);
   })
   .catch(err => {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while retrieving customer."
+        err.message || "Some error occurred while retrieving Customer."
     });
   });
+
+};
+exports.findCustomer =(req,res)=>{
+  try {
+    Customer.find({customerId: req.params.customerId})
+    .then(data =>{
+      if(!data)
+      res.status(404).send({message: "Merchant Not found with customerId"+ id});
+      else res.send(data);
+    })
+  } catch (error) {
+    res
+          .status(500)
+          .send({ message: "Error retrieving Merchant with customerId=" + id });
+    
+  }
 };
 // Find a single customer with an id
 exports.findOne = (req, res) => {

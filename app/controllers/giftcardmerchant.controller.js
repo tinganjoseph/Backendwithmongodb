@@ -38,16 +38,13 @@ exports.create = (req, res) => {
 };
 // Retrieve all GiftcardMerchant from the database.
 exports.findAll = (req, res) => {
-  const { page, size } = req.query;
-  const { limit, offset } = getPagination(page, size);
-  GiftcardMerchant.paginate( { offset, limit })
-  ///GiftcardMerchant.find({})
+  //const { page, size } = req.query;
+  //const { limit, offset } = getPagination(page, size);
+  //GiftcardMerchant.paginate( { offset, limit })
+  GiftcardMerchant.find({})
   .then(data => {
     res.send({
-        totalItems: data.totalDocs,
-        giftcardmerchants: data.docs,
-        totalPages: data.totalPages,
-        currentPage: data.page - 1,
+        giftcardmerchants:data
     });
   })
   .catch(err => {

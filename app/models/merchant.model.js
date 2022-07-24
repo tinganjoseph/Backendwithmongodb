@@ -1,4 +1,4 @@
-module.exports = (mongoose, mongoosePaginate)  => {
+module.exports = (mongoose)  => {
   var schema = mongoose.Schema(
     {
       name: String,
@@ -9,6 +9,7 @@ module.exports = (mongoose, mongoosePaginate)  => {
       address:  String, 
       position: String, 
       email:  String,
+      merchantId:  String,
     },
     { timestamps: true }
   );
@@ -17,7 +18,7 @@ module.exports = (mongoose, mongoosePaginate)  => {
     object.id = _id;
     return object;
   });
-  schema.plugin(mongoosePaginate);
+
   const Merchants = mongoose.model("Merchant", schema);
   return Merchants;
 };

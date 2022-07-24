@@ -1,17 +1,26 @@
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
+const cookieParser = require("cookie-parser");
 const app = express();
 const db = require("./app/models");
+
+const router = require("./app/routes/userdata.routes")
 const Role = db.role;
 require('dotenv').config();
 
-var corsOptions = {
-  origin: "http://localhost:1501"
-};
-app.use(cors(corsOptions));
+app.use(cors());
+app.use((req,res,next)=>{
+    res.header('Access-Control-Allow-Headers, *, Access-Control-Allow-Origin', 'Origin, X-Requested-with, Content_Type,Accept,Authorization','http://localhost:3001');
+    if(req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods','PUT,POST,PATCH,DELETE,GET');
+        return res.status(200).json({});
+    }
+    next();
+});
 // parse requests of content-type - application/json
 app.use(express.json());
+app.use(cookieParser());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -78,6 +87,11 @@ require('./app/routes/loyaltymerchant.routes')(app);
 require('./app/routes/customerdiscount.routes')(app);
 require('./app/routes/customergiftcard.routes')(app);
 require('./app/routes/customerloyalty.routes')(app);
+app.use("/api", router);
+
+//routes for transaction
+require('./app/routes/transactiondiscount')(app);
+require('./app/routes/transactionloyalty')(app);
 // simple route
 
 app.get("/", (req, res) => {

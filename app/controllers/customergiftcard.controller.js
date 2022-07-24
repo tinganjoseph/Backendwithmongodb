@@ -39,6 +39,8 @@ exports.create = (req, res) => {
       });
     });
 };
+
+
 // Retrieve all GiftcardCustomer from the database.
 exports.findAll = (req, res) => {
   const { page, size } = req.query;

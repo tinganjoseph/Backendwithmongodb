@@ -8,6 +8,7 @@ module.exports = app => {
     
     // Retrieve a single customer with id
     router.get("/:id", customer.findOne);
+    router.get("/customerfind/:customerId", customer.findCustomer);
     // Update a customer with id
     router.put("/:id", customer.update);
     // Delete a customer with id

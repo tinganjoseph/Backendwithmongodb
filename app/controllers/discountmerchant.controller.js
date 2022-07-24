@@ -3,7 +3,7 @@ const db = require("../models");
 const DiscountMerchant = db.discountmerchant;
 const getPagination = (page, size) => {
   const limit = size ? +size : 3;
-  const offset = page ? page * limit : 0;
+  const offset = page ? page * limit : 1;
   return { limit, offset };
 };
 // Create and Save a new Discountmerchant
@@ -41,17 +41,12 @@ exports.create = (req, res) => {
 };
 // Retrieve all Discountmerchant from the database.
 exports.findAll = (req, res) => {
-  const { page, size } = req.query;
-  const { limit, offset } = getPagination(page, size);
-  DiscountMerchant.paginate( { offset, limit })
-  ///DiscountMerchant.find({})
+  //const { page, size } = req.query;
+ // const { limit, offset } = getPagination(page, size);
+  //DiscountMerchant.paginate( { offset, limit })
+  DiscountMerchant.find({})
   .then(data => {
-    res.send({
-        totalItems: data.totalDocs,
-        discountmerchants: data.docs,
-        totalPages: data.totalPages,
-        currentPage: data.page - 1,
-    });
+    res.send(data);
   })
   .catch(err => {
     res.status(500).send({
@@ -74,6 +69,21 @@ exports.findOne = (req, res) => {
           .status(500)
           .send({ message: "Error retrieving DiscountMerchant with id=" + id });
       });
+};
+exports.findCode = (req, res) => {
+  const id = req.body.merchantcode;
+
+  DiscountMerchant.find({merchantcode:'62cab387a69deb94ddfa7e8a'})
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "DiscountMerchant Not found with id " + id });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving DiscountMerchant with id=" + id });
+    });
 };
 
 // Find a single Discountmerchant with an id

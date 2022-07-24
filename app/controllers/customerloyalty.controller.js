@@ -77,6 +77,25 @@ exports.findOne = (req, res) => {
       });
 };
 
+
+
+
+exports.findMerchant =(req,res)=>{
+  try {
+    LoyaltyCustomer.find({merchantcode: req.params.merchantcode})
+    .then(data =>{
+      if(!data)
+      res.status(404).send({message: "LoyaltyCustomer Not found with merchantcode"+ id});
+      else res.send(data);
+    })
+  } catch (error) {
+    res
+          .status(500)
+          .send({ message: "Error retrieving LoyaltyCustomer with id=" + id });
+    
+  }
+}
+
 // Find a single LoyaltyCustomer with an id
 exports.findAllMerchantcode = (req, res) => {
     const { page, size } = req.query;

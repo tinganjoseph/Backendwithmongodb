@@ -39,17 +39,12 @@ exports.create = (req, res) => {
 };
 // Retrieve all LoyaltyMerchant from the database.
 exports.findAll = (req, res) => {
-  const { page, size } = req.query;
-  const { limit, offset } = getPagination(page, size);
-  LoyaltyMerchant.paginate( { offset, limit })
-  ///LoyaltyMerchant.find({})
+  //const { page, size } = req.query;
+  //const { limit, offset } = getPagination(page, size);
+  //LoyaltyMerchant.paginate( { offset, limit })
+  LoyaltyMerchant.find({})
   .then(data => {
-    res.send({
-        totalItems: data.totalDocs,
-        loyalthmerchants: data.docs,
-        totalPages: data.totalPages,
-        currentPage: data.page - 1,
-    });
+    res.send(data);
   })
   .catch(err => {
     res.status(500).send({
